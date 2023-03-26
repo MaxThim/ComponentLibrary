@@ -6,3 +6,26 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<script>
+    document.addEventListener('dropdownChanged', (event) => {
+        const selectedId = event.detail;
+        fetchData(selectedId);
+    });
+
+    async function fetchData(selectedId) {
+        // Your fetch logic here
+        console.log(`Fetching data for ID: ${selectedId}`);
+
+        // Set the content of the h1 element with the selected ID
+        const h1Element = document.getElementById("selected-id-display");
+        h1Element.textContent = `Selected ID: ${selectedId}`;
+    }
+</script>
+
+<h1 id="selected-id-display"></h1>
+
+<partial name="_dropdown" />
+<partial name="_dropdown" />
+

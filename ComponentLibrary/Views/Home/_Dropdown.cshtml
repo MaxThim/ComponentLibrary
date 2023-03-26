@@ -1,0 +1,94 @@
+﻿
+
+@{
+    var people = new List<dynamic>
+    {
+        new { Id = 1, Name = "Wade Cooper" },
+        new { Id = 2, Name = "Arlene Mccoy" },
+        new { Id = 3, Name = "Devon Webb" },
+        new { Id = 4, Name = "Tom Cook" },
+        new { Id = 5, Name = "Tanya Fox" },
+        new { Id = 6, Name = "Hellen Schmidt" },
+        new { Id = 7, Name = "Caroline Schultz" },
+        new { Id = 8, Name = "Mason Heaney" },
+        new { Id = 9, Name = "Claudie Smitham" },
+        new { Id = 10, Name = "Emil Schaefer" }
+    };
+}
+
+<div class="w-25">
+    <label id="listbox-label" class="block text-sm font-medium leading-6 text-gray-900">Assigned to</label>
+    <div class="relative mt-2">
+        <button type="button" id="listbox-button" class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="listbox-label">
+            <span id="selected-name" class="block truncate">@people[3].Name</span>
+            <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z" clip-rule="evenodd" />
+                </svg>
+            </span>
+        </button>
+        <ul id="listbox-options" class="hidden absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm transition ease-in duration-100" tabindex="-1" role="listbox" aria-labelledby="listbox-label">
+            @foreach (var person in people)
+            {
+                <li class="text-gray-900 relative cursor-default select-none py-2 pl-8 pr-4" id="listbox-option-@person.Id" data-id="@person.Id" data-name="@person.Name" role="option" onmouseenter="this.classList.add('bg-indigo-600', 'text-white');" onmouseleave="this.classList.remove('bg-indigo-600', 'text-white');">
+                    <span class="font-normal block truncate">@person.Name</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<script>
+    const listboxButton = document.getElementById("listbox-button");
+    const selectedName = document.getElementById("selected-name");
+    const listboxOptions = document.getElementById("listbox-options");
+
+    listboxButton.addEventListener("click", () => {
+        listboxOptions.classList.toggle("hidden");
+        listboxOptions.classList.toggle("opacity-100");
+        listboxOptions.classList.toggle("opacity-0");
+    });
+
+    listboxOptions.addEventListener("click", (event) => {
+        let target = event.target;
+        if (!target.closest("li")) return;
+
+        let option = target.closest("li");
+        let id = option.dataset.id;
+        let name = option.dataset.name;
+
+        selectedName.textContent = name;
+        listboxOptions.classList.toggle("hidden");
+        listboxOptions.classList.toggle("opacity-100");
+        listboxOptions.classList.toggle("opacity-0");
+
+        const dropdownChangedEvent = new CustomEvent('dropdownChanged', { detail: id });
+        document.dispatchEvent(dropdownChangedEvent);
+    });
+
+</script>
+
+@section Scripts
+    {
+    <script>
+        const listboxButton = document.getElementById('listbox-button');
+        const listboxOptions = document.getElementById('listbox-options');
+        const selectedName = document.getElementById('selected-name');
+        const options = listboxOptions.querySelectorAll('[role="option"]');
+
+        listboxButton.addEventListener('click', () => {
+            listboxOptions.classList.toggle('hidden');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                const id = option.getAttribute('data-id');
+                const name = option.getAttribute('data-name');
+                selectedName.textContent = name;
+                listboxOptions.classList.add('hidden');
+                // Save the selected id and name for future use (e.g., form submission)
+                // console.log('Selected person:', { id, name });
+            });
+        });
+    </script>
+}
